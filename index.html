@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VISION — eye disease screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#11242b;
+    --ink-soft:#4a6068;
+    --paper:#f4f7f6;
+    --card:#ffffff;
+    --line:#d8e2df;
+    --teal:#0b4f55;
+    --teal-bright:#12787f;
+    --calm:#2e7d6b;
+    --caution:#a8620a;
+    --urgent:#b3261e;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    font-variant-numeric:tabular-nums;
+  }
+  a{color:var(--teal-bright)}
+
+  .masthead{
+    border-bottom:1px solid var(--line);
+    background:var(--teal);
+    color:#eaf3f2;
+  }
+  .masthead .inner{
+    max-width:1120px;margin:0 auto;padding:18px 24px;
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  }
+  .wordmark{font-size:22px;font-weight:700;letter-spacing:.14em;margin:0}
+  .tagline{margin:0;font-size:14px;color:#a9cfcd}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 24px 72px}
+
+  .banner{
+    border:1px solid #e3cf9c;background:#fdf6e4;color:#6b4e12;
+    padding:12px 16px;border-radius:var(--radius);margin-bottom:24px;font-size:14px;
+  }
+  .banner code{background:#f3e7c9;padding:1px 5px;border-radius:4px}
+
+  .columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+  @media (max-width:880px){.columns{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;
+  }
+  .panel h2{margin:0 0 4px;font-size:17px;font-weight:600}
+  .panel p.hint{margin:0 0 18px;color:var(--ink-soft);font-size:14px}
+
+  fieldset{border:0;margin:0 0 18px;padding:0}
+  legend{font-size:14px;font-weight:600;padding:0 0 8px}
+  .choice{
+    display:flex;gap:12px;align-items:flex-start;
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px 14px;margin-bottom:8px;cursor:pointer;background:#fff;
+  }
+  .choice:has(input:checked){border-color:var(--teal);box-shadow:inset 3px 0 0 var(--teal)}
+  .choice:has(input:disabled){opacity:.5;cursor:not-allowed}
+  .choice input{margin-top:5px;accent-color:var(--teal)}
+  .choice .t{font-weight:600;font-size:14px}
+  .choice .d{font-size:13px;color:var(--ink-soft)}
+  .choice .off{font-size:12px;color:var(--urgent)}
+
+  /* The image is the interface: the drop zone is the largest element on screen. */
+  .dropzone{
+    position:relative;border:2px dashed var(--line);border-radius:var(--radius);
+    background:#fbfdfc;min-height:260px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;cursor:pointer;overflow:hidden;
+  }
+  .dropzone.over{border-color:var(--teal-bright);background:#eef7f6}
+  .dropzone:focus-visible{outline:3px solid var(--teal-bright);outline-offset:2px}
+  .dropzone .eyebrow{font-weight:600;margin-bottom:4px}
+  .dropzone .sub{font-size:13px;color:var(--ink-soft)}
+  .dropzone img{display:block;max-width:100%;max-height:340px;border-radius:6px}
+
+  .scanning::after{
+    content:"";position:absolute;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--teal-bright),transparent);
+    animation:sweep 1.5s ease-in-out infinite;
+  }
+  @keyframes sweep{0%{top:4%}50%{top:94%}100%{top:4%}}
+  @media (prefers-reduced-motion:reduce){.scanning::after{animation:none;top:50%}}
+
+  .row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  button{
+    font:inherit;font-weight:600;border-radius:8px;padding:11px 20px;cursor:pointer;border:1px solid transparent;
+  }
+  button:focus-visible{outline:3px solid var(--teal-bright);outline-offset:2px}
+  .primary{background:var(--teal);color:#fff}
+  .primary:hover:not(:disabled){background:var(--teal-bright)}
+  .primary:disabled{background:#9cb3b2;cursor:not-allowed}
+  .ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+
+  .toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft);margin-top:14px}
+  .toggle input{accent-color:var(--teal)}
+
+  .empty{color:var(--ink-soft);font-size:14px}
+  .error{border:1px solid #e5b4b0;background:#fdf1f0;color:#7a231c;padding:12px 16px;border-radius:var(--radius);font-size:14px}
+
+  /* Result */
+  .verdict{border-left:5px solid var(--calm);padding:2px 0 2px 16px;margin-bottom:18px}
+  .verdict.soon{border-left-color:var(--caution)}
+  .verdict.urgent{border-left-color:var(--urgent)}
+  .verdict h3{margin:0;font-size:24px;line-height:1.25;font-weight:600}
+  .verdict .conf{margin:6px 0 0;font-size:14px;color:var(--ink-soft)}
+  .verdict .urg{font-size:13px;font-weight:600;color:var(--calm)}
+  .verdict.soon .urg{color:var(--caution)}
+  .verdict.urgent .urg{color:var(--urgent)}
+
+  .bars{margin:0 0 20px;padding:0;list-style:none}
+  .bars li{display:grid;grid-template-columns:1fr 54px;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+  .bars .name{position:relative;padding:3px 8px;border-radius:5px;background:#eef2f1;overflow:hidden}
+  .bars .fill{position:absolute;inset:0;width:0;background:#cfe3e0}
+  .bars .txt{position:relative}
+  .bars li:first-child .fill{background:#a9d4cf}
+  .bars .pct{text-align:right;color:var(--ink-soft)}
+
+  .cam{margin-bottom:20px}
+  .cam img{width:100%;border-radius:6px;border:1px solid var(--line)}
+  .cam figcaption{font-size:13px;color:var(--ink-soft);margin-top:6px}
+
+  details{border-top:1px solid var(--line);padding:14px 0 0;margin-top:4px}
+  details summary{cursor:pointer;font-weight:600;font-size:15px}
+  details ul{margin:10px 0 0;padding-left:20px}
+  details li{margin-bottom:6px;font-size:14px}
+  details p{font-size:14px;color:var(--ink-soft)}
+
+  .disclaimer{
+    margin-top:22px;padding:14px 16px;border-radius:var(--radius);
+    background:#eef2f1;font-size:13px;color:var(--ink-soft);
+  }
+  footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;font-size:13px;color:var(--ink-soft)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="inner">
+    <h1 class="wordmark">VISION</h1>
+    <p class="tagline">Upload an eye photo and find out whether you should see a doctor.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  {% if not tasks|selectattr('available')|list %}
+  <div class="banner">
+    No trained models found yet. Train at least one before uploading:
+    <code>python -m src.train --task internal</code>. The interface below stays
+    disabled until a model file appears in <code>models/</code>.
+  </div>
+  {% endif %}
+
+  <div class="columns">
+
+    <section class="panel">
+      <h2>Your photo</h2>
+      <p class="hint">Nothing is stored. The image is analysed and discarded.</p>
+
+      <fieldset>
+        <legend>Which kind of photo is this?</legend>
+        {% for t in tasks %}
+        <label class="choice">
+          <input type="radio" name="task" value="{{ t.key }}"
+                 {% if not t.available %}disabled{% endif %}
+                 {% if loop.first and t.available %}checked{% endif %}>
+          <span>
+            <span class="t">{{ t.name }}</span><br>
+            <span class="d">{{ t.blurb }}</span>
+            {% if not t.available %}<br><span class="off">Model not trained yet</span>{% endif %}
+          </span>
+        </label>
+        {% endfor %}
+      </fieldset>
+
+      <div class="dropzone" id="drop" tabindex="0" role="button"
+           aria-label="Choose an eye photo, or drag one here">
+        <div id="placeholder">
+          <p class="eyebrow">Drag a photo here, or click to choose one</p>
+          <p class="sub">JPG, PNG or WebP · up to {{ max_mb }} MB</p>
+        </div>
+        <img id="preview" alt="" hidden>
+      </div>
+      <input type="file" id="file" accept="image/*" class="sr">
+
+      <label class="toggle">
+        <input type="checkbox" id="cam" checked>
+        Show which parts of the image the model used
+      </label>
+
+      <div class="row">
+        <button class="primary" id="go" disabled>Analyse photo</button>
+        <button class="ghost" id="reset" type="button">Clear</button>
+      </div>
+    </section>
+
+    <section class="panel" id="out" aria-live="polite">
+      <h2>Result</h2>
+      <p class="empty">Choose a photo and select <em>Analyse photo</em>.</p>
+    </section>
+
+  </div>
+
+  <div class="disclaimer" id="footer-note">
+    VISION is a screening aid built as a student project. It is not a medical
+    device and cannot diagnose. Any pain, injury or change in vision needs a
+    doctor today, whatever this page says.
+  </div>
+</main>
+
+<footer>
+  Department of Computer Science &amp; Engineering, Medi-Caps University, Indore.
+</footer>
+
+<script>
+(function () {
+  const drop = document.getElementById('drop');
+  const fileInput = document.getElementById('file');
+  const preview = document.getElementById('preview');
+  const placeholder = document.getElementById('placeholder');
+  const go = document.getElementById('go');
+  const resetBtn = document.getElementById('reset');
+  const camToggle = document.getElementById('cam');
+  const out = document.getElementById('out');
+  const MAX_BYTES = {{ max_mb }} * 1024 * 1024;
+
+  let chosen = null;
+
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function setFile(f) {
+    if (!f) return;
+    if (!f.type.startsWith('image/')) return showError('That file is not an image.');
+    if (f.size > MAX_BYTES) return showError('That image is larger than {{ max_mb }} MB.');
+    chosen = f;
+    preview.src = URL.createObjectURL(f);
+    preview.hidden = false;
+    placeholder.hidden = true;
+    go.disabled = false;
+  }
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+  });
+  fileInput.addEventListener('change', e => setFile(e.target.files[0]));
+
+  ['dragenter', 'dragover'].forEach(ev =>
+    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev =>
+    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => setFile(e.dataTransfer.files[0]));
+
+  resetBtn.addEventListener('click', () => {
+    chosen = null;
+    fileInput.value = '';
+    preview.hidden = true;
+    preview.removeAttribute('src');
+    placeholder.hidden = false;
+    go.disabled = true;
+    out.innerHTML = '<h2>Result</h2><p class="empty">Choose a photo and select <em>Analyse photo</em>.</p>';
+  });
+
+  function showError(msg, hint) {
+    out.innerHTML = '<h2>Result</h2><div class="error">' + esc(msg) +
+      (hint ? '<br><br>' + esc(hint) : '') + '</div>';
+  }
+
+  go.addEventListener('click', async () => {
+    if (!chosen) return;
+    const task = document.querySelector('input[name="task"]:checked');
+    if (!task) return showError('No model is available for this photo type yet.');
+
+    const body = new FormData();
+    body.append('image', chosen);
+    body.append('task', task.value);
+    body.append('gradcam', camToggle.checked ? 'true' : 'false');
+
+    go.disabled = true;
+    drop.classList.add('scanning');
+    out.innerHTML = '<h2>Result</h2><p class="empty">Analysing…</p>';
+
+    try {
+      const res = await fetch('/api/predict', { method: 'POST', body });
+      const data = await res.json();
+      if (!res.ok) return showError(data.error || 'Something went wrong.', data.hint);
+      render(data);
+    } catch (err) {
+      showError('Could not reach the server. Check that it is still running.');
+    } finally {
+      go.disabled = false;
+      drop.classList.remove('scanning');
+    }
+  });
+
+  function render(d) {
+    const pct = n => (n * 100).toFixed(1) + '%';
+    const urgencyWord = { routine: 'Routine — no rush',
+                          soon: 'See someone soon',
+                          urgent: 'Get seen today' }[d.urgency] || d.urgency;
+
+    let html = '<h2>Result</h2>';
+
+    html += '<div class="verdict ' + esc(d.urgency) + '">' +
+            '<h3>' + esc(d.label) + '</h3>' +
+            '<p class="conf">Confidence ' + pct(d.confidence) +
+            ' · <span class="urg">' + esc(urgencyWord) + '</span></p></div>';
+
+    if (d.low_confidence && d.message) {
+      html += '<div class="error">' + esc(d.message) + '</div>';
+    }
+
+    html += '<ul class="bars">';
+    d.probabilities.forEach(p => {
+      html += '<li><span class="name">' +
+              '<span class="fill" style="width:' + pct(p.probability) + '"></span>' +
+              '<span class="txt">' + esc(p.label) + '</span></span>' +
+              '<span class="pct">' + pct(p.probability) + '</span></li>';
+    });
+    html += '</ul>';
+
+    if (d.gradcam) {
+      html += '<figure class="cam"><img src="' + d.gradcam + '" alt="Heatmap over your photo">' +
+              '<figcaption>Warmer colours mark the regions that most influenced this ' +
+              'result. Use it to sanity-check the model, not as a marker of disease.' +
+              '</figcaption></figure>';
+    }
+
+    if (d.summary) {
+      html += '<details open><summary>What this means</summary><p>' + esc(d.summary) + '</p></details>';
+    }
+    if (d.next_steps && d.next_steps.length) {
+      html += '<details open><summary>What to do next</summary><ul>' +
+              d.next_steps.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul></details>';
+    }
+    if (d.prevention && d.prevention.length) {
+      html += '<details><summary>Lowering your risk</summary><ul>' +
+              d.prevention.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul></details>';
+    }
+
+    html += '<div class="disclaimer">' + esc(d.disclaimer) + '</div>';
+    out.innerHTML = html;
+    out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Everything in requirements.txt, plus what training and evaluation need.
+# On Google Colab, TensorFlow is preinstalled — install only the rest:
+#   pip install -q pandas scikit-learn matplotlib
+-r requirements.txt
+pandas>=2.2
+scikit-learn>=1.4
+matplotlib>=3.8

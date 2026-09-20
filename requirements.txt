@@ -1,0 +1,8 @@
+# Runtime dependencies for the web app (what gets deployed).
+# tensorflow-cpu is ~400 MB smaller than the GPU build and inference on a
+# single image does not need a GPU.
+tensorflow-cpu==2.17.1
+numpy>=1.26,<2.1
+Pillow>=10.3,<12
+Flask==3.0.3
+gunicorn==22.0.0

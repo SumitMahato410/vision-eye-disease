@@ -10,7 +10,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/api/symptoms").then(r => r.json()).then(setSymptoms)
+    fetch("https://vision-eye-disease-ai2s.vercel.app/api/symptoms")
+    .then(r => r.json())
+    .then(setSymptoms)
       .catch(() => setError("Cannot reach backend. Make sure `python app.py` is running on port 5000."));
   }, []);
 
@@ -26,7 +28,13 @@ export default function App() {
     const fd = new FormData();
     fd.append("image", file); fd.append("symptoms", extra.join(","));
     try {
-      const r = await fetch("/api/predict", { method: "POST", body: fd });
+      const r = await fetch(
+    "https://vision-eye-disease-ai2s.vercel.app/api/predict",
+    {
+        method: "POST",
+        body: fd
+    }
+);
       const data = await r.json();
       if (!r.ok) setError(data.error || "Something went wrong."); else setResult(data);
     } catch { setError("Cannot reach backend. Is it running?"); }

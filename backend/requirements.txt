@@ -1,5 +1,7 @@
 flask
+flask-cors
 scikit-learn
 numpy
 joblib
 pillow
+gunicorn

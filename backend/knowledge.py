@@ -1,0 +1,61 @@
+# Symptom list + per-disease symptom probabilities (used to generate training data) + prevention info.
+SYMPTOMS = {
+    "clear_eye": "Eye looks clear (no redness)",
+    "red_eye": "Red / bloodshot eye",
+    "eyelid_swelling": "Swelling of eye or eyelid",
+    "watery_eyes": "Watery eyes",
+    "itching": "Itching",
+    "discharge": "Sticky / pus discharge",
+    "eye_pain": "Eye pain",
+    "blurred_vision": "Blurred / cloudy vision",
+    "light_sensitivity": "Sensitivity to light",
+    "dryness_burning": "Dryness or burning",
+    "eyelid_lump": "Painful lump on eyelid",
+    "crusty_lashes": "Crusty eyelashes / eyelids",
+    "halos_around_lights": "Halos around lights",
+    "gritty_feeling": "Gritty feeling (like sand)",
+}
+KEYS = list(SYMPTOMS)
+
+# order: clear, red, swell, water, itch, discharge, pain, blur, light, dry, lump, crust, halo, grit
+PROFILES = {
+ "Healthy Eye": [.95,.03,.02,.05,.05,.01,.01,.03,.03,.05,.01,.02,.01,.03],
+ "Conjunctivitis (Pink Eye)": [.02,.95,.45,.80,.40,.75,.20,.25,.30,.10,.02,.65,.02,.60],
+ "Allergic Conjunctivitis": [.05,.80,.60,.85,.97,.20,.05,.10,.10,.15,.02,.10,.01,.30],
+ "Stye (Hordeolum)": [.05,.60,.90,.35,.20,.30,.70,.10,.15,.05,.95,.30,.01,.40],
+ "Dry Eye Syndrome": [.35,.55,.10,.45,.30,.05,.15,.40,.40,.97,.02,.05,.02,.85],
+ "Blepharitis": [.10,.55,.65,.35,.75,.20,.10,.15,.15,.50,.15,.95,.01,.60],
+ "Cataract": [.85,.04,.01,.10,.02,.01,.03,.97,.60,.10,.00,.01,.60,.05],
+ "Glaucoma": [.50,.45,.05,.25,.01,.01,.60,.85,.35,.05,.00,.00,.85,.05],
+ "Uveitis": [.05,.85,.10,.50,.05,.02,.85,.80,.95,.05,.00,.01,.10,.10],
+}
+
+INFO = {
+ "Healthy Eye": ("low", "No concerning symptoms were selected. Your eyes appear healthy.",
+   ["Get a routine eye check-up every 1-2 years.", "Follow the 20-20-20 rule: every 20 min look 20 feet away for 20 sec.",
+    "Wear UV-protective sunglasses outdoors.", "Eat leafy greens, carrots, fish and drink enough water.", "Sleep 7-8 hours and limit screen time."]),
+ "Conjunctivitis (Pink Eye)": ("medium", "Inflammation/infection of the conjunctiva (clear tissue over the white of the eye). Often viral or bacterial and contagious.",
+   ["Wash hands often and never touch or rub your eyes.", "Do not share towels, pillows, makeup or eye drops.", "Clean discharge with a clean, damp cloth; use a fresh one each time.",
+    "Avoid contact lenses until fully healed.", "Change pillowcases daily while infected.", "See a doctor if there is pain, vision change or no improvement in 3-4 days."]),
+ "Allergic Conjunctivitis": ("low", "Eye reaction to allergens such as pollen, dust, pet dander or smoke. Not contagious.",
+   ["Avoid known triggers (dust, pollen, pets).", "Keep windows closed on high-pollen days.", "Use a cold compress and preservative-free lubricating drops.",
+    "Don't rub your eyes.", "Wash bedding in hot water weekly.", "Ask a doctor about antihistamine eye drops."]),
+ "Stye (Hordeolum)": ("low", "A painful lump caused by a blocked/infected oil gland on the eyelid edge.",
+   ["Apply a warm compress for 10 minutes, 3-4 times a day.", "Never squeeze or pop the stye.", "Keep eyelids clean; remove eye makeup nightly.",
+    "Replace old eye makeup and don't share it.", "Wash hands before touching your eyes.", "See a doctor if it lasts over 1-2 weeks or swelling spreads."]),
+ "Dry Eye Syndrome": ("low", "Eyes don't make enough tears or tears evaporate too fast, causing dryness and irritation.",
+   ["Use preservative-free artificial tears.", "Blink often during screen use and follow the 20-20-20 rule.", "Use a humidifier; avoid direct air from fans/AC.",
+    "Wear wraparound sunglasses outdoors.", "Drink plenty of water and eat omega-3 rich foods.", "See an eye doctor if symptoms are persistent."]),
+ "Blepharitis": ("low", "Inflammation of the eyelid edges, often from bacteria or clogged oil glands, causing crusts and itching.",
+   ["Clean eyelid margins daily with a gentle lid scrub or diluted baby shampoo.", "Apply warm compresses to loosen crusts.", "Avoid eye makeup until it improves.",
+    "Wash face and hair regularly.", "See an eye doctor if it keeps coming back."]),
+ "Cataract": ("medium", "Clouding of the eye's natural lens, usually age-related, causing blurry vision and glare.",
+   ["Book a full eye examination with an ophthalmologist.", "Wear UV-blocking sunglasses.", "Stop smoking and limit alcohol.",
+    "Control diabetes and blood pressure.", "Eat antioxidant-rich foods (vitamin C, E, leafy greens).", "Surgery is safe and effective when vision is affected."]),
+ "Glaucoma": ("high", "Damage to the optic nerve, often due to high eye pressure. Sudden pain with halos and blurred vision can be an emergency.",
+   ["See an eye doctor URGENTLY, especially with sudden pain, halos or vision loss.", "Get regular eye-pressure checks if you are over 40 or have a family history.",
+    "Take prescribed drops exactly as directed.", "Exercise moderately and control blood pressure/diabetes.", "Wear eye protection to prevent injury."]),
+ "Uveitis": ("high", "Inflammation of the middle layer of the eye. Painful, light-sensitive and can threaten vision if untreated.",
+   ["See an ophthalmologist promptly - do not wait.", "Avoid self-medicating with steroid drops.", "Wear sunglasses to ease light sensitivity.",
+    "Follow the full treatment course and attend follow-ups.", "Tell your doctor about any autoimmune conditions."]),
+}
